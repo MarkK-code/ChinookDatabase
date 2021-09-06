@@ -1,0 +1,51 @@
+1. Which genre is the most expensive per album purchased
+
+SELECT t1.genre_name, AVG(t1.price)
+FROM (SELECT  a.Title, g.Name AS genre_name,
+              count(t.Name) AS no_track,
+              count(t.Name) * t.UnitPrice AS price
+      FROM Album AS a
+      JOIN Track AS t
+      ON a.AlbumId = t.AlbumId
+      JOIN Genre AS g
+      ON t.GenreId = g.GenreId
+      GROUP BY 1, 2) t1
+GROUP BY 1;
+
+
+2. Which genre has on average the most minutes per album
+
+SELECT t1.genre_name, AVG(t1.minutes) AS minutes
+FROM (SELECT  g.Name AS genre_name,
+              t.Milliseconds/360 AS minutes
+      FROM  Track AS t
+      JOIN Genre AS g
+      ON t.GenreId = g.GenreId
+) t1
+GROUP BY  t1.genre_name
+ORDER BY minutes DESC;
+
+
+3. Which sales support person has the most customers
+
+SELECT e.EmployeeId, e.Title, e.LastName, COUNT(c.SupportRepId)
+FROM Employee AS e
+JOIN Customer AS c
+ON  e.EmployeeId = c.SupportRepId
+GROUP BY 1, 2;
+
+How many customers does the company has
+SELECT count(CustomerId)
+FROM Customer;
+
+
+4. Which artists have the most albums
+
+
+SELECT art.Name,  COUNT(alb.Title) AS no_alb
+FROM Artist AS art
+JOIN Album AS alb
+ON art.ArtistId = alb.ArtistId
+GROUP BY 1
+ORDER BY  no_alb DESC
+LIMIT 5;
